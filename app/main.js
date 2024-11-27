@@ -21,6 +21,9 @@ switch (command) {
   case "cat-file":
     handleCatFile();
     break;
+  case "hash-object":
+    handleHashObjectCommand();
+    break;
   default:
     throw new Error(`Unknown command ${command}`);
 }
@@ -42,4 +45,16 @@ function handleCatFile(){
   gitClient.run(command);
 
   // console.log({flag, commitSHA});
+}
+
+function handleHashObjectCommand(){
+  let flag = process.argv[3];
+  let filePath = process.argv[4];
+
+  if(!filePath){
+    filePath = flag;
+    flag = null;
+  }
+
+  console.log({flag, filePath});
 }
