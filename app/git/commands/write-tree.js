@@ -70,10 +70,17 @@ class WriteTreeCommand {
             }
             const treeData = result.reduce((acc, current) => {
                 const {mode, basename, sha} = current;
-                return Buffer.concat([acc, Buffer.from(`${mode} ${basename}\0${sha}`,"utf-8")]);
-            },Buffer.alloc(0));
+                const entry = Buffer.concat([
+                    Buffer.from(`${mode} ${basename}\0`, "utf-8"),
+                    Buffer.from(sha, "hex")
+                ]);
+                return Buffer.concat([acc, entry]);
+            }, Buffer.alloc(0));
 
-            const tree = Buffer.concat([Buffer.from("tree "), Buffer.from(treeData.length.toString()), Buffer.from("\0"), treeData]);
+            const tree = Buffer.concat([
+                Buffer.from(`tree ${treeData.length}\0`),
+                treeData
+            ]);
 
             const hash = crypto.createHash("sha1").update(tree).digest("hex");
 
@@ -97,4 +104,4 @@ class WriteTreeCommand {
     }   
 }
 
-module.exports = WriteTreeCommand; 
+module.exports = WriteTreeCommand;
