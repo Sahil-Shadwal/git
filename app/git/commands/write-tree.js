@@ -82,8 +82,8 @@ class WriteTreeCommand {
 
             const treeFolderPath = path.join(process.cwd(), ".git", "objects", folder);
 
-            if(!fs.existsSync(completeFolderPath)){
-                fs.mkdirSync(completeFolderPath);
+            if(!fs.existsSync(treeFolderPath)){
+                fs.mkdirSync(treeFolderPath);
             }
 
             const compressedData = zlib.deflateSync(tree);
