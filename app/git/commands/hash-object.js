@@ -38,8 +38,8 @@ class HashObjectCommand{
             if(!fs.existsSync(completeFolderPath)){
                 fs.mkdirSync(completeFolderPath);
             }
-            const compressedObject = zlib.deflateSync(blob);
-            fs.writeFileSync(path.join(completeFolderPath, file), compressedObject);
+            const compressedData = zlib.deflateSync(blob);
+            fs.writeFileSync(path.join(completeFolderPath, file), compressedData);
         }
         // 6. Return the SHA-1 hash of the object
         process.stdout.write(hash);
