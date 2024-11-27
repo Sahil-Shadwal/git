@@ -4,7 +4,7 @@ const path = require("path");
 const GitClient = require("./git/client");
 
 // Commands
-const {CatFileCommand} = require("./git/commands");
+const {CatFileCommand, HashObjectCommand} = require("./git/commands");
 
 // You can use print statements as follows for debugging, they'll be visible when running tests.
 console.error("Logs from your program will appear here!");
@@ -56,5 +56,7 @@ function handleHashObjectCommand(){
     flag = null;
   }
 
-  console.log({flag, filePath});
+  // console.log({flag, filePath});
+  const command = new HashObjectCommand(flag, filePath);
+  gitClient.run(command);
 }
