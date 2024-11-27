@@ -3,6 +3,9 @@ const path = require("path");
 
 const GitClient = require("./git/client");
 
+// Commands
+const {CatFileCommand} = require(".git/commands");
+
 // You can use print statements as follows for debugging, they'll be visible when running tests.
 console.error("Logs from your program will appear here!");
 
@@ -34,5 +37,9 @@ function createGitDirectory() {
 function handleCatFile(){
   const flag = process.argv[3];
   const commitSHA = process.argv[4];
-  console.log({flag, commitSHA});
+
+  const command = new CatFileCommand(flag, commitSHA);
+  gitClient.run(command);
+
+  // console.log({flag, commitSHA});
 }
