@@ -177,7 +177,9 @@ class CloneCommand {
         console.log({ mainRef, mainSha });
 
         const buffer = await this.#getRefObject(mainRef, mainSha, url);
-        console.log(buffer);
+        // console.log(buffer);
+        process.stdout.write(buffer);
+
     }
 }
 
