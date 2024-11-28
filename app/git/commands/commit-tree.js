@@ -1,5 +1,24 @@
-const { name, email, date, timeZone, writeDataToFile } = require("../utils");
+const fs = require("fs");
 const crypto = require("crypto");
+const zlib = require("zlib");
+const path = require("path");
+
+function writeDataToFile(sha, data) {
+	const basePath = path.join(process.cwd(), ".git", "objects");
+	const folder = sha.slice(0, 2);
+	const file = sha.slice(2);
+
+	const folderPath = path.join(basePath, folder);
+
+	if (!fs.existsSync(folderPath)) fs.mkdirSync(folderPath);
+	const compressed = zlib.deflateSync(data);
+	fs.writeFileSync(path.join(folderPath, file), compressed);
+}
+
+const email = "sahilshadwal@gmail.com";
+const name = "Sahil Shadwal";
+const date = Date.now();
+const timeZone = "+0530";
 
 class CommitTreeCommand {
 	constructor(treeSHA, parentSHA, msg) {
