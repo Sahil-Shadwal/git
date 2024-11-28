@@ -39,7 +39,7 @@ class WriteTreeCommand {
 
             for(const dirContent of dirContents){
 
-                if(dirContent === ".git")continue;//might face error
+                if(dirContent.includes(".git"))continue;//might face error
 
                 const currentPath = path.join(basePath, dirContent);
                 const stat = fs.statSync(currentPath);
@@ -48,7 +48,7 @@ class WriteTreeCommand {
                     const sha = recursiveCreateTree(currentPath);
                     if(sha){
                         result.push({
-                            mode: "040000",
+                            mode: "40000",
                             basename: dirContent,
                             // type: "tree",
                             sha,
