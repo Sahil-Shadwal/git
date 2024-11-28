@@ -4,7 +4,7 @@ const path = require("path");
 const GitClient = require("./git/client");
 
 // Commands
-const {CatFileCommand, HashObjectCommand, LSTreeCommand, WriteTreeCommand, CommitTreeCommand } = require("./git/commands");
+const {CatFileCommand, HashObjectCommand, LSTreeCommand, WriteTreeCommand, CommitTreeCommand, CloneCommand } = require("./git/commands");
 
 // You can use print statements as follows for debugging, they'll be visible when running tests.
 // console.error("Logs from your program will appear here!");
@@ -32,6 +32,9 @@ switch (command) {
     break;
   case "commit-tree":
     handleCommitTreeCommand();
+    break;
+  case "clone":
+    handleCloneCommand();
     break;
   default:
     throw new Error(`Unknown command ${command}`);
@@ -96,4 +99,23 @@ function handleCommitTreeCommand(){
 
   const command = new CommitTreeCommand(tree, commitSHA, commitMessage);
   gitClient.run(command);
+}
+
+function handleCloneCommand() {
+	const url = process.argv[3];
+	const dir = process.argv[4];
+
+	const folderPath = path.join(process.cwd(), dir);
+
+	if (fs.existsSync(folderPath)) {
+		if (fs.readdirSync(folderPath).length !== 0)
+			throw new Error(
+				`destination path '${dir}' already exists and is not an empty directory.`
+			);
+	} else {
+		fs.mkdirSync(folderPath);
+	}
+
+	const command = new CloneCommand(url, dir);
+	gitClient.run(command);
 }
