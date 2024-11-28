@@ -2,6 +2,7 @@ const path = require("path");
 const fs = require("fs");
 const https = require("https");
 const zlib = require("zlib");
+const crypto = require("crypto");
 
 function createGitDirectory(folderPath, branch = "main") {
 	fs.mkdirSync(path.join(folderPath, ".git"), { recursive: true });
@@ -15,6 +16,19 @@ function createGitDirectory(folderPath, branch = "main") {
 		`ref: refs/heads/${branch}\n`
 	);
 }
+
+function writeDataToFile(sha, data) {
+	const basePath = path.join(process.cwd(), ".git", "objects");
+	const folder = sha.slice(0, 2);
+	const file = sha.slice(2);
+
+	const folderPath = path.join(basePath, folder);
+
+	if (!fs.existsSync(folderPath)) fs.mkdirSync(folderPath);
+	const compressed = zlib.deflateSync(data);
+	fs.writeFileSync(path.join(folderPath, file), compressed);
+}
+
 class CloneCommand {
 	constructor(url, dir) {
 		this.url = url;
@@ -43,6 +57,8 @@ class CloneCommand {
 
 				res.on("end", () => {
 					console.log(responseBuffer.length);
+					const commitSHA = crypto.createHash("sha1").update(responseBuffer).digest("hex");
+					writeDataToFile(commitSHA, responseBuffer);
 					resolve(responseBuffer);
 				});
 			});
