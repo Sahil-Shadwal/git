@@ -17,8 +17,8 @@ function createGitDirectory(folderPath, branch = "main") {
 	);
 }
 
-function writeDataToFile(sha, data) {
-	const basePath = path.join(process.cwd(), this.dir, ".git", "objects");
+function writeDataToFile(sha, data, dir) {
+	const basePath = path.join(process.cwd(), dir, ".git", "objects");
 	const folder = sha.slice(0, 2);
 	const file = sha.slice(2);
 
@@ -58,13 +58,13 @@ class CloneCommand {
 				res.on("end", () => {
 					console.log(responseBuffer.length);
 					const commitSHA = crypto.createHash("sha1").update(responseBuffer).digest("hex");
-					writeDataToFile.call(this, commitSHA, responseBuffer);
+					writeDataToFile(commitSHA, responseBuffer, this.dir);
 					resolve(responseBuffer);
 				});
 			});
 
 			req.on("error", (e) => {
-				reject(`Some error occured: ${e.message}`);
+				reject(`Some error occurred: ${e.message}`);
 			});
 			req.write(body);
 			req.end();
